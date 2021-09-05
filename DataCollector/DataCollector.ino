@@ -31,7 +31,8 @@
 /*Global Variables*/
 //a counter to limit the number of cycles where values are displayed
 int counter = 0; 
-
+int episode = 0;
+int moveLength = 128;
 
 /*Setup Function*/
 void setup()
@@ -57,7 +58,7 @@ void loop()
 
   // Check if the accelerometer is ready and if the loop has only
   //   been run less than 200 times (=~3 seconds displayed) 
-  if (IMU.accelerationAvailable() and counter < 200 and IMU.gyroscopeAvailable())
+  if (IMU.accelerationAvailable() and counter < moveLength and IMU.gyroscopeAvailable())
   {
     // Read the accelerometer
     IMU.readAcceleration(ax, ay, az);
@@ -71,8 +72,8 @@ void loop()
     gz = (int) (gz*100);
 
     // Print the values to the Serial Monitor
-    Serial.print(counter);
-    Serial.print('\t');
+    //Serial.print(counter);
+    //Serial.print('\t');
     Serial.print(ax);
     Serial.print('\t');
     Serial.print(ay);
@@ -87,10 +88,15 @@ void loop()
     
   // When the loop has run 200 times, reset the counter and delay
   //   3 seconds, then print empty lines and the new datapoint sequence
-  } else if (counter >= 200) {
+  } else if (counter > moveLength) {
+
+    episode += 1;
+    Serial.print("episode: ");
+    Serial.println(episode);
+    
+    Serial.println("\n\n\n\n\n\n\n\n\n\n\n\n\n-,-,-");
     counter = 0;
     delay(3000);
-    Serial.print("\n\n\n\n\n\n\n\n\n\n\n\n\n-,-,-");
   }
   // Increment the counter and delay .01 seconds
   counter += 1;
