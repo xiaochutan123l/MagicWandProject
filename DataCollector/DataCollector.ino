@@ -1,4 +1,4 @@
-/*
+./ /*
   Accelerometer_DataCollection.ino
 
   This code reads data from the Arduino Nano 33 BLE Sense's built-in 
