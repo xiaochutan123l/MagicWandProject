@@ -46,7 +46,6 @@ void setup()
     Serial.println("Failed to initialize IMU!");
     while (1);
   }
-  Serial.println("-,-,-");    
 }
 
 
@@ -72,8 +71,9 @@ void loop()
     gz = (int) (gz*100);
 
     // Print the values to the Serial Monitor
-    //Serial.print(counter);
-    //Serial.print('\t');
+    
+    //TODO: Change to csv format.
+    Serial.println("-,-,-");    
     Serial.print(ax);
     Serial.print('\t');
     Serial.print(ay);
@@ -94,7 +94,7 @@ void loop()
     Serial.print("episode: ");
     Serial.println(episode);
     
-    Serial.println("\n\n\n\n\n\n\n\n\n\n\n\n\n-,-,-");
+    Serial.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
     counter = 0;
     delay(3000);
   }
