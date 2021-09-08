@@ -8,3 +8,6 @@ folders = ["w", "o", "l"]
 names = [
     "leming", "tingting", "xiaochu", "yilun"
 ]
+
+TRAIN_RATIO = 0.6
+VALID_RATIO = 0.2
