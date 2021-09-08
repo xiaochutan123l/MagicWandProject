@@ -1,2 +1,5 @@
 # Ignore output files.
-complete_data
+./complete_data
+./test
+./train
+./valid
