@@ -21,7 +21,7 @@ import os
 import unittest
 from data_prepare import prepare_original_data
 from data_prepare import write_data
-from constant import LABEL_NAME, DATA_NAME, folders, names
+from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR
 
 
 class TestPrepare(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestPrepare(unittest.TestCase):
         self.assertEqual(self.data[0]["name"], names[0])  # pylint: disable=undefined-variable
 
     def test_write_data(self):
-        data_path_test = "./data/data0"
+        data_path_test = f"{DATA_DIR}/data0"
         write_data(self.data, data_path_test)
         with open(data_path_test, "r") as f:
             lines = f.readlines()

@@ -11,3 +11,6 @@ names = [
 
 TRAIN_RATIO = 0.6
 VALID_RATIO = 0.2
+
+DATA_DIM = 6  # ax, ay, az, gx, gy, gz
+DATA_DIR = "./data/build"

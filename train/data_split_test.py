@@ -19,13 +19,13 @@ import json
 import unittest
 from data_split import read_data
 from data_split import split_data
-from constant import LABEL_NAME, DATA_NAME
+from constant import LABEL_NAME, DATA_NAME, DATA_DIR
 
 class TestSplit(unittest.TestCase):
     def setUp(self):  # pylint: disable=g-missing-super-call
-        self.data = read_data("./data/complete_data")
+        self.data = read_data(f"{DATA_DIR}/complete_data")
         self.num_dic = {"w": 0, "o": 0, "l": 0}
-        with open("./data/complete_data", "r") as f:
+        with open(f"{DATA_DIR}/complete_data", "r") as f:
             lines = f.readlines()
             self.num = len(lines)
 
@@ -37,7 +37,7 @@ class TestSplit(unittest.TestCase):
                          set([LABEL_NAME, DATA_NAME, "name"]))
 
     def test_split_data(self):
-        with open("./data/complete_data", "r") as f:
+        with open(f"{DATA_DIR}/complete_data", "r") as f:
             lines = f.readlines()
             for idx, line in enumerate(lines):  # pylint: disable=unused-variable
                 dic = json.loads(line)

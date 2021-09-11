@@ -1,0 +1,9 @@
+# Ignore output files.
+
+# Ignore output data.
+/data/build
+
+# Ignore cache.
+/_pychache_
+/.pytest_cache
+/.idea

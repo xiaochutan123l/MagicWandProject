@@ -31,7 +31,7 @@ data format:    data[]: [new_data, new_data, ... , new_data]
                              'names':xiaochu} 
 """
 
-from constant import LABEL_NAME, DATA_NAME, folders, names
+from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR
 
 import csv
 import json
@@ -81,4 +81,4 @@ if __name__ == "__main__":
     print("data_length: " + str(len(data)))
     if not os.path.exists("./data"):
         os.makedirs("./data")
-    write_data(data, "./data/complete_data")
+    write_data(data, f"{DATA_DIR}/complete_data")

@@ -28,7 +28,7 @@ It will generate new files with the following structure:
 import json
 import random
 from data_prepare import write_data
-from constant import LABEL_NAME, DATA_NAME, TRAIN_RATIO, VALID_RATIO
+from constant import LABEL_NAME, DATA_NAME, TRAIN_RATIO, VALID_RATIO, DATA_DIR
 
 # Read data
 def read_data(path):
@@ -78,8 +78,8 @@ def split_data(data, train_ratio, valid_ratio):  # pylint: disable=redefined-out
 
 
 if __name__ == "__main__":
-    data = read_data("./data/complete_data")
+    data = read_data(f"{DATA_DIR}/complete_data")
     train_data, valid_data, test_data = split_data(data, TRAIN_RATIO, VALID_RATIO)
-    write_data(train_data, "./data/train")
-    write_data(valid_data, "./data/valid")
-    write_data(test_data, "./data/test")
+    write_data(train_data, f"{DATA_DIR}/train")
+    write_data(valid_data, f"{DATA_DIR}/valid")
+    write_data(test_data, f"{DATA_DIR}/test")
