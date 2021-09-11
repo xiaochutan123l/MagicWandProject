@@ -4,6 +4,6 @@
 /data/build
 
 # Ignore cache.
-/_pycache_
+/__pycache__
 /.pytest_cache
 /.idea
