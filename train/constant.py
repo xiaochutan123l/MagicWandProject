@@ -14,3 +14,7 @@ VALID_RATIO = 0.2
 
 DATA_DIM = 6  # ax, ay, az, gx, gy, gz
 DATA_DIR = "./data/build"
+
+MAX_A = 400
+MAX_G = 100000
+MAX_LIST = [400, 400, 400, 100000, 100000, 100000]

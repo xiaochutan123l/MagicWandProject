@@ -31,14 +31,25 @@ data format:    data[]: [new_data, new_data, ... , new_data]
                              'names':xiaochu} 
 """
 
-from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR
-
+from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR, MAX_LIST
+xyz = [0,0,0,0,0,0]
 import csv
 import json
 import os
 import random
 
-def prepare_original_data(folder, name, data, file_to_read):  # pylint: disable=redefined-outer-name
+
+def calc_maximum(data):
+    global xyz
+    for i, num in enumerate(data):
+        if xyz[i] < abs(num):
+            xyz[i] = abs(num)
+
+def print_max():
+    global xyz
+    print(xyz)
+
+def prepare_original_data(folder, name, data, file_to_read, norm=False):  # pylint: disable=redefined-outer-name
     """Read collected data from files."""
     #TODO: modify DataCollctor.ino to output csv format data, and also modify this method.
     with open(file_to_read, "r") as f:
@@ -58,7 +69,12 @@ def prepare_original_data(folder, name, data, file_to_read):  # pylint: disable=
                 data_new[DATA_NAME] = []
                 data_new["name"] = name
             elif len(line_texts) == 6:
-                data_new[DATA_NAME].append([float(i) for i in line_texts[0:6]])
+                if norm:
+                    data_new[DATA_NAME].append([float(i)/j for i, j in zip(line_texts[0:6], MAX_LIST)])
+                    calc_maximum([float(i)/j for i, j in zip(line_texts[0:6], MAX_LIST)])
+                else:
+                    data_new[DATA_NAME].append([float(i) for i in line_texts[0:6]])
+                    calc_maximum([float(i) for i in line_texts[0:6]])
         data.append(data_new)
 
 # Write data to file
@@ -72,13 +88,15 @@ def write_data(data_to_write, path):
 
 if __name__ == "__main__":
     data = []  # pylint: disable=redefined-outer-name
+    norm = True
     #TODO: add variable SIZE(and maybe hand, number) and acquire small move and large move data.
     for idx1, folder in enumerate(folders):
         for idx2, name in enumerate(names):
             prepare_original_data(folder, name, data,
-                                "./data/%s/%s_medium_%s_right_1.txt" % (folder, folder, name))
+                                "./data/%s/%s_medium_%s_right_1.txt" % (folder, folder, name), norm)
 
     print("data_length: " + str(len(data)))
     if not os.path.exists("./data"):
         os.makedirs("./data")
     write_data(data, f"{DATA_DIR}/complete_data")
+    print_max()
