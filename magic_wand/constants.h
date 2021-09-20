@@ -20,7 +20,8 @@ limitations under the License.
 const float kTargetHz = 25;
 
 // What gestures are supported.
-constexpr int kGestureCount = 4;
+//constexpr int kGestureCount = 4;
+constexpr int kGestureCount = 3;
 constexpr int kWingGesture = 0;
 constexpr int kRingGesture = 1;
 constexpr int kSlopeGesture = 2;

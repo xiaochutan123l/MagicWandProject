@@ -16,7 +16,7 @@ limitations under the License.
 #include "gesture_predictor.h"
 
 #include "constants.h"
-
+#include <Arduino.h>
 namespace {
 // State for the averaging algorithm we're using.
 float prediction_history[kGestureCount][kPredictionHistoryLength] = {};
@@ -52,15 +52,21 @@ int PredictGesture(float* output) {
       max_predict_score = prediction_average;
     }
   }
-
+  Serial.begin(9600);
+  Serial.print("max prediction score: ");
+  Serial.print(max_predict_score);
+  Serial.print("\n");
   // If there's been a recent prediction, don't trigger a new one too soon.
   if (prediction_suppression_count > 0) {
     --prediction_suppression_count;
   }
   // If we're predicting no gesture, or the average score is too low, or there's
   // been a gesture recognised too recently, return no gesture.
-  if ((max_predict_index == kNoGesture) ||
-      (max_predict_score < kDetectionThreshold) ||
+  //if ((max_predict_index == kNoGesture) ||
+  //    (max_predict_score < kDetectionThreshold) ||
+  //    (prediction_suppression_count > 0)) {
+  //  return kNoGesture;
+  if ((max_predict_score < kDetectionThreshold) ||
       (prediction_suppression_count > 0)) {
     return kNoGesture;
   } else {

@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-
+/*
 #if defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 #define ARDUINO_EXCLUDE_CODE
 #endif  // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
@@ -27,7 +27,8 @@ limitations under the License.
 #include "constants.h"
 
 // A buffer holding the last 200 sets of 3-channel values
-float save_data[600] = {0.0};
+//float save_data[600] = {0.0};
+float save_data[1200] = {0.0};
 // Most recent position in the save_data buffer
 int begin_index = 0;
 // True if there is not yet enough data to run inference
@@ -64,18 +65,19 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
   // Keep track of whether we stored any new data
   bool new_data = false;
   // Loop through new samples and add to buffer
-  while (IMU.accelerationAvailable()) {
-    float x, y, z;
+  //while (IMU.accelerationAvailable()) {
+  while (IMU.accelerationAvailable() and IMU.gyroscopeAvailable()) {
+    float ax, ay, az, gx, gy, gz;
     // Read each sample, removing it from the device's FIFO buffer
-    if (!IMU.readAcceleration(x, y, z)) {
+    if (!IMU.readAcceleration(ax, ay, az) or !IMU.readGyroscope(gx, gy, gz)) {
       TF_LITE_REPORT_ERROR(error_reporter, "Failed to read data");
       break;
     }
     // Throw away this sample unless it's the nth
-    if (sample_skip_counter != sample_every_n) {
-      sample_skip_counter += 1;
-      continue;
-    }
+    //if (sample_skip_counter != sample_every_n) {
+    //  sample_skip_counter += 1;
+    //  continue;
+    //}
     // Write samples to our buffer, converting to milli-Gs and rotating the axis
     // order for compatibility with model (sensor orientation is different on
     // Arduino Nano BLE Sense compared with SparkFun Edge).
@@ -96,16 +98,24 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
     //                   ||
     //                   ()
     //
-    const float norm_x = y;
-    const float norm_y = -x;
-    const float norm_z = x;
-    save_data[begin_index++] = norm_x * 1000;
-    save_data[begin_index++] = norm_y * 1000;
-    save_data[begin_index++] = norm_z * 1000;
+    //const float norm_x = y;
+    //const float norm_y = -x;
+    //const float norm_z = x;
+    
+    //save_data[begin_index++] = norm_x * 1000;
+    //save_data[begin_index++] = norm_y * 1000;
+    //save_data[begin_index++] = norm_z * 1000;
+    save_data[begin_index++] = ax / 4;
+    save_data[begin_index++] = ay / 4;
+    save_data[begin_index++] = az / 4;
+    save_data[begin_index++] = gx / 1000;
+    save_data[begin_index++] = gy / 1000;
+    save_data[begin_index++] = gz / 1000;
     // Since we took a sample, reset the skip counter
-    sample_skip_counter = 1;
+    //sample_skip_counter = 1;
     // If we reached the end of the circle buffer, reset
-    if (begin_index >= 600) {
+    //if (begin_index >= 600) {
+    if (begin_index >= 1200) {
       begin_index = 0;
     }
     new_data = true;
@@ -117,7 +127,8 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
   }
 
   // Check if we are ready for prediction or still pending more initial data
-  if (pending_initial_data && begin_index >= 200) {
+  //if (pending_initial_data && begin_index >= 200) {
+  if (pending_initial_data && begin_index >= 400) {
     pending_initial_data = false;
   }
 
@@ -139,3 +150,4 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
 }
 
 #endif  // ARDUINO_EXCLUDE_CODE
+*/
