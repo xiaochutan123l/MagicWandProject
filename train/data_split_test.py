@@ -24,7 +24,7 @@ from constant import LABEL_NAME, DATA_NAME, DATA_DIR
 class TestSplit(unittest.TestCase):
     def setUp(self):  # pylint: disable=g-missing-super-call
         self.data = read_data(f"{DATA_DIR}/complete_data")
-        self.num_dic = {"w": 0, "o": 0, "l": 0}
+        self.num_dic = {"w": 0, "o": 0, "l": 0, "negative":0}
         with open(f"{DATA_DIR}/complete_data", "r") as f:
             lines = f.readlines()
             self.num = len(lines)
@@ -48,11 +48,11 @@ class TestSplit(unittest.TestCase):
         train_data_50, valid_data_50, test_data_0 = split_data(self.data, 0.5, 0.5)
         train_data_60, valid_data_20, test_data_20 = split_data(self.data, 0.6, 0.2)
         len_60 = int(self.num_dic["w"] * 0.6) + int(
-            self.num_dic["o"] * 0.6) + int(self.num_dic["l"] * 0.6)
+            self.num_dic["o"] * 0.6) + int(self.num_dic["l"] * 0.6) + int(self.num_dic["negative"] * 0.6)
         len_50 = int(self.num_dic["w"] * 0.5) + int(
-            self.num_dic["o"] * 0.5) + int(self.num_dic["l"] * 0.5)
+            self.num_dic["o"] * 0.5) + int(self.num_dic["l"] * 0.5) + int(self.num_dic["negative"] * 0.5)
         len_20 = int(self.num_dic["w"] * 0.2) + int(
-            self.num_dic["o"] * 0.2) + int(self.num_dic["l"] * 0.2)
+            self.num_dic["o"] * 0.2) + int(self.num_dic["l"] * 0.2) + int(self.num_dic["negative"] * 0.2)
         self.assertEqual(len(train_data_0), 0)
         self.assertEqual(len(train_data_50), len_50)
         self.assertEqual(len(train_data_60), len_60)
@@ -62,6 +62,8 @@ class TestSplit(unittest.TestCase):
         self.assertEqual(len(test_data_100), self.num)
         self.assertEqual(len(test_data_0), (self.num - 2 * len_50))
         self.assertEqual(len(test_data_20), (self.num - len_60 - len_20))
+
+        #self.assertEqual(self.num_dic["negative"], 400)
 
 
 if __name__ == "__main__":

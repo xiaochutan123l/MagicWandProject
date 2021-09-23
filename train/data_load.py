@@ -30,7 +30,7 @@ class DataLoader(object):
                seq_length):
         self.dim = DATA_DIM
         self.seq_length = seq_length
-        self.label2id = {"w": 0, "o": 1, "l": 2}
+        self.label2id = {"w": 0, "o": 1, "l": 2, "negative": 3}
         self.train_data, self.train_label, self.train_len = self.get_data_file(
             train_data_path, "train")
         self.valid_data, self.valid_label, self.valid_len = self.get_data_file(

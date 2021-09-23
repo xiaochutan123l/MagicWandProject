@@ -4,7 +4,7 @@ Global variables.
 
 LABEL_NAME = "gesture"
 DATA_NAME = "acce_gyro_xyz"
-folders = ["w", "o", "l"]
+folders = ["w", "o", "l", "negative"]
 names = [
     "leming", "tingting", "xiaochu", "yilun"
 ]

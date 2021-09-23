@@ -31,7 +31,7 @@ data format:    data[]: [new_data, new_data, ... , new_data]
                              'names':xiaochu} 
 """
 
-from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR, MAX_LIST
+from constant import LABEL_NAME, DATA_NAME, folders, names, DATA_DIR, MAX_LIST, DATA_DIM
 xyz = [0,0,0,0,0,0]
 import csv
 import json
@@ -52,30 +52,54 @@ def print_max():
 def prepare_original_data(folder, name, data, file_to_read, norm=False):  # pylint: disable=redefined-outer-name
     """Read collected data from files."""
     #TODO: modify DataCollctor.ino to output csv format data, and also modify this method.
-    with open(file_to_read, "r") as f:
-        lines = f.readlines()
-        data_new = {}
-        data_new[LABEL_NAME] = folder
-        data_new[DATA_NAME] = []
-        data_new["name"] = name
-        for idx, line in enumerate(lines):  # pylint: disable=unused-variable,redefined-outer-name
-            line_texts = line.split()
-            # '-,-,-'
-            if len(line_texts) == 1 and data_new[DATA_NAME]:
-                assert line_texts[0] == '-,-,-'
-                data.append(data_new)
-                data_new = {}
-                data_new[LABEL_NAME] = folder
-                data_new[DATA_NAME] = []
-                data_new["name"] = name
-            elif len(line_texts) == 6:
-                if norm:
-                    data_new[DATA_NAME].append([float(i)/j for i, j in zip(line_texts[0:6], MAX_LIST)])
-                    calc_maximum([float(i)/j for i, j in zip(line_texts[0:6], MAX_LIST)])
-                else:
-                    data_new[DATA_NAME].append([float(i) for i in line_texts[0:6]])
-                    calc_maximum([float(i) for i in line_texts[0:6]])
-        data.append(data_new)
+    if folder != "negative":
+        with open(file_to_read, "r") as f:
+            lines = f.readlines()
+            data_new = {}
+            data_new[LABEL_NAME] = folder
+            data_new[DATA_NAME] = []
+            data_new["name"] = name
+            for idx, line in enumerate(lines):  # pylint: disable=unused-variable,redefined-outer-name
+                line_texts = line.split()
+                # '-,-,-'
+                if len(line_texts) == 1 and data_new[DATA_NAME]:
+                    assert line_texts[0] == '-,-,-'
+                    data.append(data_new)
+                    data_new = {}
+                    data_new[LABEL_NAME] = folder
+                    data_new[DATA_NAME] = []
+                    data_new["name"] = name
+                elif len(line_texts) == DATA_DIM:
+                    if norm:
+                        data_new[DATA_NAME].append([float(i)/j for i, j in zip(line_texts[0:DATA_DIM], MAX_LIST)])
+                        calc_maximum([float(i)/j for i, j in zip(line_texts[0:DATA_DIM], MAX_LIST)])
+                    else:
+                        data_new[DATA_NAME].append([float(i) for i in line_texts[0:DATA_DIM]])
+                        calc_maximum([float(i) for i in line_texts[0:DATA_DIM]])
+            data.append(data_new)
+    else:
+        with open(file_to_read, "r") as f:
+            lines = csv.reader(f)
+            data_new = {}
+            data_new[LABEL_NAME] = folder
+            data_new[DATA_NAME] = []
+            data_new["name"] = name
+            for idx, line in enumerate(lines):
+                # "-,-,-"
+                if len(line) == 3 and data_new[DATA_NAME]:
+                    data.append(data_new)
+                    data_new = {}
+                    data_new[LABEL_NAME] = folder
+                    data_new[DATA_NAME] = []
+                    data_new["name"] = name
+                elif len(line) == DATA_DIM:
+                    if norm:
+                        data_new[DATA_NAME].append([float(i)/j for i, j in zip(line[0:DATA_DIM], MAX_LIST)])
+                        calc_maximum([float(i)/j for i, j in zip(line[0:DATA_DIM], MAX_LIST)])
+                    else:
+                        data_new[DATA_NAME].append([float(i) for i in line[0:DATA_DIM]])
+                        calc_maximum([float(i) for i in line[0:DATA_DIM]])
+            data.append(data_new)
 
 # Write data to file
 def write_data(data_to_write, path):
@@ -88,12 +112,15 @@ def write_data(data_to_write, path):
 
 if __name__ == "__main__":
     data = []  # pylint: disable=redefined-outer-name
+    # Normalization option.
     norm = True
     #TODO: add variable SIZE(and maybe hand, number) and acquire small move and large move data.
-    for idx1, folder in enumerate(folders):
+    for idx1, folder in enumerate(folders[:-1]):
         for idx2, name in enumerate(names):
             prepare_original_data(folder, name, data,
                                 "./data/%s/%s_medium_%s_right_1.txt" % (folder, folder, name), norm)
+    prepare_original_data(folders[-1], "xiaochu", data,
+                          "./data/%s/%s.txt" % (folders[-1], folders[-1]), norm)
 
     print("data_length: " + str(len(data)))
     if not os.path.exists("./data"):

@@ -51,7 +51,7 @@ def build_cnn(seq_length):
           8, (4, 6),
           padding="same",
           activation="relu",
-          input_shape=(seq_length, 6, 1)),  # output_shape=(batch, 128, 8, 8)
+          input_shape=(seq_length, 6, 1)),  # output_shape=(batch, 128, 6, 8)
       tf.keras.layers.MaxPool2D((3, 6)),  # (batch, 42, 1, 8)
       tf.keras.layers.Dropout(0.1),  # (batch, 42, 1, 8)
       tf.keras.layers.Conv2D(16, (4, 1), padding="same",
@@ -61,7 +61,7 @@ def build_cnn(seq_length):
       tf.keras.layers.Flatten(),  # (batch, 224)
       tf.keras.layers.Dense(16, activation="relu"),  # (batch, 16)
       tf.keras.layers.Dropout(0.1),  # (batch, 16)
-      tf.keras.layers.Dense(3, activation="softmax")  # (batch, 4)
+      tf.keras.layers.Dense(4, activation="softmax")  # (batch, 4)
   ])
   model_path = os.path.join("./netmodels", "CNN")
   print("Built CNN.")
@@ -77,7 +77,7 @@ def build_lstm(seq_length):
   model = tf.keras.Sequential([
       tf.keras.layers.Bidirectional(
           tf.keras.layers.LSTM(22),
-          input_shape=(seq_length, 3)),  # output_shape=(batch, 44)
+          input_shape=(seq_length, 6)),  # output_shape=(batch, 44)
       tf.keras.layers.Dense(4, activation="sigmoid")  # (batch, 4)
   ])
   model_path = os.path.join("./netmodels", "LSTM")
@@ -120,7 +120,7 @@ def train_net(
   """Trains the model."""
   calculate_model_size(model)
   #epochs = 50
-  epochs = 10
+  epochs = 50
   batch_size = 64
   model.compile(optimizer="adam",
                 loss="sparse_categorical_crossentropy",
