@@ -46,6 +46,7 @@ def calculate_model_size(model):
 
 def build_cnn(seq_length):
   """Builds a convolutional neural network in Keras."""
+  '''
   model = tf.keras.Sequential([
       tf.keras.layers.Conv2D(
           8, (4, 6),
@@ -63,6 +64,26 @@ def build_cnn(seq_length):
       tf.keras.layers.Dropout(0.1),  # (batch, 16)
       tf.keras.layers.Dense(4, activation="softmax")  # (batch, 4)
   ])
+  '''
+  # Try with one Convolution layer.
+  model = tf.keras.Sequential([
+      tf.keras.layers.Conv2D(
+          8, (4, 6),
+          padding="same",
+          activation="relu",
+          input_shape=(seq_length, 6, 1)),  # output_shape=(batch, 128, 6, 8)
+      tf.keras.layers.MaxPool2D((3, 6)),  # (batch, 42, 1, 8)
+      tf.keras.layers.Dropout(0.1),  # (batch, 42, 1, 8)
+      #tf.keras.layers.Conv2D(16, (4, 1), padding="same",
+      #                       activation="relu"),  # (batch, 42, 1, 16)
+      #tf.keras.layers.MaxPool2D((3, 1), padding="same"),  # (batch, 14, 1, 16)
+      #tf.keras.layers.Dropout(0.1),  # (batch, 14, 1, 16)
+      tf.keras.layers.Flatten(),  # (batch, 336)
+      tf.keras.layers.Dense(16, activation="relu"),  # (batch, 16)
+      tf.keras.layers.Dropout(0.1),  # (batch, 16)
+      tf.keras.layers.Dense(4, activation="softmax")  # (batch, 4)
+  ])
+
   model_path = os.path.join("./netmodels", "CNN")
   print("Built CNN.")
   if not os.path.exists(model_path):
@@ -120,7 +141,7 @@ def train_net(
   """Trains the model."""
   calculate_model_size(model)
   #epochs = 50
-  epochs = 50
+  epochs = 10
   batch_size = 64
   model.compile(optimizer="adam",
                 loss="sparse_categorical_crossentropy",
@@ -140,7 +161,8 @@ def train_net(
   model.fit(train_data,
             epochs=epochs,
             validation_data=valid_data,
-            steps_per_epoch=1000,
+            #steps_per_epoch=1000,
+            steps_per_epoch=int(train_len / batch_size),
             validation_steps=int((valid_len - 1) / batch_size + 1),
             callbacks=[tensorboard_callback])
   loss, acc = model.evaluate(test_data)

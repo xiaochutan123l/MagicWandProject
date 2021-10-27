@@ -20,7 +20,7 @@ import json
 import numpy as np
 import tensorflow as tf
 
-#from data_augmentation import augment_data
+from data_augmentation import augment_data
 from constant import LABEL_NAME, DATA_NAME, DATA_DIM, DATA_DIR
 
 
@@ -48,9 +48,8 @@ class DataLoader(object):
                 dic = json.loads(line)
                 data.append(dic[DATA_NAME])
                 label.append(dic[LABEL_NAME])
-        #TODO: Add augment function if needed.
-        #if data_type == "train":
-        #    data, label = augment_data(data, label)
+        if data_type == "train":
+            data, label = augment_data(data, label)
         length = len(label)
         print(data_type + "_data_length:" + str(length))
         return data, label, length
