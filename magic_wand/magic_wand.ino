@@ -17,10 +17,8 @@ limitations under the License.
 
 #include "main_functions.h"
 
-//#include "accelerometer_handler.h"
-#include "accelerometer_handler2.h"
+#include "accelerometer_handler.h"
 #include "constants.h"
-#include "gesture_predictor.h"
 #include "magic_wand_model_data.h"
 #include "output_handler.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
@@ -47,7 +45,7 @@ uint8_t tensor_arena[kTensorArenaSize];
 
 // The name of this function is important for Arduino compatibility.
 void setup() {
-  delay(10000);
+  delay(3000);
   // Set up logging. Google style is to avoid globals or statics because of
   // lifetime uncertainty, but since this has a trivial destructor it's okay.
   static tflite::MicroErrorReporter micro_error_reporter;  // NOLINT
@@ -105,38 +103,67 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("----------Start reading, please wave the magic wand----------");
   // Attempt to read new data from the accelerometer.
   bool got_data =
       ReadAccelerometer(error_reporter, model_input->data.f, input_length);
   // If there was no new data, wait until next time.
   if (!got_data) return;
-  Serial.print("input_length: ");
-  Serial.println(input_length);
-  Serial.println("----------Finish reading, predicting...----------");
   // Run inference, and report any error.
   TfLiteStatus invoke_status = interpreter->Invoke();
   if (invoke_status != kTfLiteOk) {
-    //TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed on index: %d\n",
-    //                    begin_index);
     TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed on index: %d\n",
-                        counter);
+                        begin_index);
     return;
   }
-  // Analyze the results to obtain a prediction
-  //int gesture_index = PredictGesture(interpreter->output(0)->data.f);
-  float* result = interpreter->output(0)->data.f;
+
+  // Gesture detection(only for detection, not enough presision for gesture prediction), 
+  // one new gesture captured if gesture not negative.
+  
+  float* output = interpreter->output(0)->data.f;
   int gesture_index = 0;
-  for (int i = 1; i < kGestureCount; ++i) {
-    if (result[gesture_index]< result[i]){
+  float max_score = output[0];
+  for (int i = 0; i < kGestureCount; i++){
+    if (max_score < output[i]){
+      max_score = output[i];
       gesture_index = i;
       }
-  }
-  for (int i = 0; i < kGestureCount; ++i) {
-    Serial.println(result[i]);
-  }
-  
-  // Produce an output
-  HandleOutput(error_reporter, gesture_index);
-  delay(2000);
+    }
+    
+  if (max_score <= kDetectionThreshold){
+    gesture_index = kNoGesture;
+    }
+  // Analyze the results to obtain a prediction
+
+  // Continue two more inference and get output using the max sum of score.
+  if (gesture_index != kNoGesture){
+    float out_sum[4] = {0.0, 0.0, 0.0, 0.0};
+    
+    for (int i = 0; i < kGestureCount; i++){
+      out_sum[i] += output[i];
+      }
+
+    for (int i = 0; i < 2; i++){
+      got_data = ReadAccelerometer(error_reporter, model_input->data.f, input_length);
+      TfLiteStatus invoke_status = interpreter->Invoke();
+      if (invoke_status != kTfLiteOk) {
+        TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed on index: %d\n",
+                          begin_index);
+        return;
+        }
+        
+      float* output = interpreter->output(0)->data.f;
+      for (int i = 0; i < kGestureCount; i++){
+        out_sum[i] += output[i];
+        }
+      }
+    int gesture_index = 0;
+    float max_score = out_sum[0];
+    for (int i = 0; i < kGestureCount; i++){
+      if (max_score < out_sum[i]){
+        max_score = out_sum[i];
+        gesture_index = i;
+        }
+      }
+    HandleOutput(error_reporter, gesture_index);
+    }
 }

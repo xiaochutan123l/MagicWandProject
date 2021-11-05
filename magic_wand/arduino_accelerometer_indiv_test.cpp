@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-
+/*
 #if defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 #define ARDUINO_EXCLUDE_CODE
 #endif  // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
@@ -59,6 +59,7 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
         TF_LITE_REPORT_ERROR(error_reporter, "Failed to read data");
         break;
       }
+      // Subsampling, keep the sampling frequence close to the data collecting.
       if (jump){
         jump = false;
         break;
@@ -88,3 +89,4 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
 }
 
 #endif  // ARDUINO_EXCLUDE_CODE
+*/

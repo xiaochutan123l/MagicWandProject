@@ -20,8 +20,8 @@ limitations under the License.
 const float kTargetHz = 25;
 
 // What gestures are supported.
-//constexpr int kGestureCount = 4;
-constexpr int kGestureCount = 3;
+constexpr int kGestureCount = 4;
+//constexpr int kGestureCount = 3;
 constexpr int kWingGesture = 0;
 constexpr int kRingGesture = 1;
 constexpr int kSlopeGesture = 2;
@@ -32,8 +32,9 @@ constexpr int kNoGesture = 3;
 // these thresholds. Often, increasing the size of the training set will give
 // more robust results though, so consider retraining if you are seeing poor
 // predictions.
-constexpr float kDetectionThreshold = 0.8f;
+constexpr float kDetectionThreshold = 0.95f;
 constexpr int kPredictionHistoryLength = 5;
-constexpr int kPredictionSuppressionDuration = 25;
+//constexpr int kPredictionSuppressionDuration = 25;
+constexpr int kPredictionSuppressionDuration = 10;
 
 #endif  // TENSORFLOW_LITE_MICRO_EXAMPLES_MAGIC_WAND_CONSTANTS_H_

@@ -52,6 +52,13 @@ void HandleOutput(tflite::ErrorReporter* error_reporter, int kind) {
         "SLOPE:\n\r        *\n\r       *\n\r      *\n\r     *\n\r    "
         "*\n\r   *\n\r  *\n\r * * * * * * * *\n\r");
   }
+  //else if (kind == 3) {
+  //  digitalWrite(LED_BUILTIN, LOW);
+  //  TF_LITE_REPORT_ERROR(
+  //      error_reporter,
+  //      "NEGATIVE:\n\r"
+  //      "\n\r\n\r * * * * * * * *\n\r\n\r");
+  //}
 }
 
 #endif  // ARDUINO_EXCLUDE_CODE
