@@ -35,6 +35,8 @@ tflite::MicroInterpreter* interpreter = nullptr;
 TfLiteTensor* model_input = nullptr;
 int input_length;
 
+int pred_pause = 0;
+
 // Create an area of memory to use for input, output, and intermediate arrays.
 // The size of this will depend on the model you're using, and may need to be
 // determined by experimentation.
@@ -108,6 +110,10 @@ void loop() {
       ReadAccelerometer(error_reporter, model_input->data.f, input_length);
   // If there was no new data, wait until next time.
   if (!got_data) return;
+  if (pred_pause > 0){
+    pred_pause -= 1;
+    return;
+    }
   // Run inference, and report any error.
   TfLiteStatus invoke_status = interpreter->Invoke();
   if (invoke_status != kTfLiteOk) {
@@ -136,6 +142,7 @@ void loop() {
 
   // Continue two more inference and get output using the max sum of score.
   if (gesture_index != kNoGesture){
+    Serial.println(-1);
     float out_sum[4] = {0.0, 0.0, 0.0, 0.0};
     
     for (int i = 0; i < kGestureCount; i++){
@@ -164,6 +171,11 @@ void loop() {
         gesture_index = i;
         }
       }
-    HandleOutput(error_reporter, gesture_index);
+    if (gesture_index != kNoGesture){
+      //HandleOutput(error_reporter, gesture_index);
+      Serial.println(gesture_index);
+      pred_pause = 2;
+      }
+    
     }
 }

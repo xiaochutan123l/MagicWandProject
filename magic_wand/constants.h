@@ -32,7 +32,7 @@ constexpr int kNoGesture = 3;
 // these thresholds. Often, increasing the size of the training set will give
 // more robust results though, so consider retraining if you are seeing poor
 // predictions.
-constexpr float kDetectionThreshold = 0.95f;
+constexpr float kDetectionThreshold = 0.9f;
 constexpr int kPredictionHistoryLength = 5;
 //constexpr int kPredictionSuppressionDuration = 25;
 constexpr int kPredictionSuppressionDuration = 10;
