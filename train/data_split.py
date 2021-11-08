@@ -47,7 +47,9 @@ def split_data(data, train_ratio, valid_ratio):  # pylint: disable=redefined-out
     train_data = []  # pylint: disable=redefined-outer-name
     valid_data = []  # pylint: disable=redefined-outer-name
     test_data = []  # pylint: disable=redefined-outer-name
-    num_dic = {"w": 0, "o": 0, "l": 0, "negative":0}
+    num_dic = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0,
+           "8": 0, "9": 0, "add": 0, "sub": 0, "mul": 0, "div": 0,
+           "dot": 0, "del": 0, "eq": 0, "negative": 0}
     for idx, item in enumerate(data):  # pylint: disable=unused-variable
         for label in num_dic:
             if item[LABEL_NAME] == label:
