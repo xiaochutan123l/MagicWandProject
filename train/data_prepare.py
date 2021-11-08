@@ -54,28 +54,26 @@ def prepare_original_data(folder, name, data, file_to_read, norm=False):  # pyli
     #TODO: modify DataCollctor.ino to output csv format data, and also modify this method.
     if folder != "negative":
         with open(file_to_read, "r") as f:
-            lines = f.readlines()
+            lines = csv.reader(f)
             data_new = {}
             data_new[LABEL_NAME] = folder
             data_new[DATA_NAME] = []
             data_new["name"] = name
             for idx, line in enumerate(lines):  # pylint: disable=unused-variable,redefined-outer-name
-                line_texts = line.split()
                 # '-,-,-'
-                if len(line_texts) == 1 and data_new[DATA_NAME]:
-                    assert line_texts[0] == '-,-,-'
+                if len(line) == 3 and data_new[DATA_NAME]:
                     data.append(data_new)
                     data_new = {}
                     data_new[LABEL_NAME] = folder
                     data_new[DATA_NAME] = []
                     data_new["name"] = name
-                elif len(line_texts) == DATA_DIM:
+                elif len(line) == DATA_DIM:
                     if norm:
-                        data_new[DATA_NAME].append([float(i)/j for i, j in zip(line_texts[0:DATA_DIM], MAX_LIST)])
-                        calc_maximum([float(i)/j for i, j in zip(line_texts[0:DATA_DIM], MAX_LIST)])
+                        data_new[DATA_NAME].append([float(i)/j for i, j in zip(line[0:DATA_DIM], MAX_LIST)])
+                        calc_maximum([float(i)/j for i, j in zip(line[0:DATA_DIM], MAX_LIST)])
                     else:
-                        data_new[DATA_NAME].append([float(i) for i in line_texts[0:DATA_DIM]])
-                        calc_maximum([float(i) for i in line_texts[0:DATA_DIM]])
+                        data_new[DATA_NAME].append([float(i) for i in line[0:DATA_DIM]])
+                        calc_maximum([float(i) for i in line[0:DATA_DIM]])
             data.append(data_new)
     else:
         with open(file_to_read, "r") as f:

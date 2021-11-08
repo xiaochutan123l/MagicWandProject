@@ -33,10 +33,9 @@ class TestPrepare(unittest.TestCase):
     def test_prepare_data(self):
         num = 0
         with open(self.file, "r") as f:
-            lines = f.readlines()
+            lines = csv.reader(f)
             for idx, line in enumerate(lines):  # pylint: disable=unused-variable
-                line_texts = line.split()
-                if len(line_texts) == 2 and line_texts[0] == 'episode:':
+                if len(line) == 3 and line[2] == "-":
                     num += 1
         self.assertEqual(len(self.data), num)
         self.assertIsInstance(self.data, list)
