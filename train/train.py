@@ -207,6 +207,7 @@ if __name__ == "__main__":
     train_len, train_data, valid_len, valid_data, test_len, test_data = \
         load_data("./person_split/train", "./person_split/valid",
                   "./person_split/test", seq_length)
+    print(f"{train_len}, {valid_len}, {test_len}")
   else:
     train_len, train_data, valid_len, valid_data, test_len, test_data = \
         load_data(f"{DATA_DIR}/train", f"{DATA_DIR}/valid", f"{DATA_DIR}/test", seq_length)
