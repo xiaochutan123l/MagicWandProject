@@ -140,7 +140,7 @@ def train_net(
   """Trains the model."""
   calculate_model_size(model)
   #epochs = 50
-  epochs = 200
+  epochs = 50
   batch_size = 64
   model.compile(optimizer="adam",
                 loss="sparse_categorical_crossentropy",
