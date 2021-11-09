@@ -168,7 +168,7 @@ def train_net(
   pred = np.argmax(model.predict(test_data), axis=1)
   confusion = tf.math.confusion_matrix(labels=tf.constant(test_labels),
                                        predictions=tf.constant(pred),
-                                       num_classes=4)
+                                       num_classes=GESTURE_NUM)
   print(confusion)
   print("Loss {}, Accuracy {}".format(loss, acc))
   # Convert the model to the TensorFlow Lite format without quantization
